@@ -1,0 +1,217 @@
+---
+openapi: 3.0.0
+info:
+  title: API-Documentation
+  description: Welcome to my Blog Api.Swagger and Redoc
+  termsOfService: http://blog.musasahinkundakci.com/terms-of-services
+  contact:
+    name: Musa Şahin Kundakcı
+    url: http://blog.musasahinkundakci.com/contact-us
+    email: musa.20@windowslive.com
+  license:
+    name: Copyright Blog - IOT 2020. All rights reserved
+  version: v1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/musasahinkundakci/Api-Deneme/v1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://blog.musasahinkundakci.com/api/v1.0/
+  description: Development Server
+security:
+- ApiAuthKey: []
+tags:
+- name: Auth
+- name: User
+- name: Blog
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      description: kullanıcıyı doğrular ve JWT döndürür.
+      operationId: login
+      parameters:
+      - name: username
+        in: query
+        description: kullanıcının kullanıcı adı
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: username
+      - name: password
+        in: query
+        description: kullanıcının şifresi
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: password
+      responses:
+        "200":
+          description: Kullanıcı doğrulandı ve JWT gönderildi.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+        "400":
+          description: Error 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400'
+  /auth/logout:
+    post:
+      tags:
+      - Auth
+      description: kullanıcıyı ve session doğrular
+      operationId: logout
+      parameters:
+      - name: token
+        in: header
+        description: kullanıcının JWT'si
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: 1123123wsdasd123142343l112o31231asd
+      responses:
+        "200":
+          description: Kullanıcı doğrulandı ve JWT gönderildi.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Error 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400'
+  /user/get-User:
+    get:
+      tags:
+      - User
+      description: Kullanıcıyı doğrular ve bilgileri getirir
+      operationId: getUser
+      parameters:
+      - name: token
+        in: header
+        description: kullanıcının JWT'si
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: 1123123wsdasd123142343l112o31231asd
+      responses:
+        "200":
+          description: Kullanıcı doğrulandı ve istenen user döndürüldü.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "400":
+          description: Error 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400'
+  /blog/add:
+    post:
+      tags:
+      - Blog
+      description: Blog ekler.
+      operationId: addBlog
+      parameters:
+      - name: title
+        in: query
+        description: Blog başlık
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 'example: Masserati''nin 2022 yeni tasarımı...'
+      - name: created-at
+        in: query
+        description: Blog ne zaman oluşturuldu?
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: 21/03/2019
+      - name: content
+        in: query
+        description: Blogun içeriği
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Çalışma ve Sosyal Güvenlik Bakanı Vedat Bilgin, asgari ücrete yen
+      - name: token
+        in: header
+        description: Kullanıcı JWT
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: fdsafds123231sadffaadfafd
+      responses:
+        "200":
+          description: Blog eklendi ve id'si döndürüldü.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Add-Blog'
+        "400":
+          description: Error 400
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/400'
+components:
+  schemas:
+    Login:
+      type: object
+      properties:
+        token:
+          type: string
+          example: 1123123wsdasd123142343l112o31231asd
+      description: Schema for login
+    "400":
+      type: object
+      properties:
+        error:
+          type: string
+          example: Bad-Request -- Invalid body in your request
+      description: Schema for bad request
+    Add-Blog:
+      type: object
+      properties:
+        blog-id:
+          type: string
+          example: 1123123wsdaddsaddsadasdsd123142343l112o31231aasd
+      description: Schema for add blog
+    inline_response_200:
+      type: object
+      properties:
+        success:
+          type: string
+          example: User logged out succesfully!
+    inline_response_200_1:
+      type: object
+      properties:
+        success:
+          type: string
+          example: User başarıyla gönderildi!
+  securitySchemes:
+    ApiAuthKey:
+      type: apiKey
+      name: X-Auth-Token
+      in: header
